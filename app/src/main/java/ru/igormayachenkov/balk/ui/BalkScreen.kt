@@ -23,10 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.igormayachenkov.balk.data.Balk
+import ru.igormayachenkov.balk.data.FakeData
+import ru.igormayachenkov.balk.domain.Calculation
 import ru.igormayachenkov.balk.ui.theme.BalkTheme
 
 @Composable
-fun BalkScreen(balk: Balk){
+fun BalkScreen(state: BalkUiState){
+    val (balk,calculation) = state
+
     var editMode by rememberSaveable{ mutableStateOf(false) }
 
 
@@ -90,7 +94,8 @@ fun BalkScreen(balk: Balk){
                 Text("Calculate")
             }
         }else{
-            Text("The balk calculation...")
+            Text("The balk calculation:")
+            Text(calculation.toString())
         }
     }
 }
@@ -103,10 +108,9 @@ private fun Preview(){
     BalkTheme(darkTheme = true) {
         Surface() {
             BalkScreen(
-                Balk(
-                    width  = 0.05,
-                    height = 0.15,
-                    length = 3.0
+                BalkUiState(
+                    balk = FakeData.balk,
+                    calculation = Calculation.Success(0.13)
                 )
             )
         }
