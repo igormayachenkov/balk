@@ -34,8 +34,7 @@ fun BalkScreen(
 ){
     val (balk,calculation) = state
 
-    var editMode by rememberSaveable{ mutableStateOf(false) }
-
+    var editorState by rememberSaveable{ mutableStateOf<EditorUiState?>(null) }
 
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -47,19 +46,17 @@ fun BalkScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             Text("Balk", Modifier.weight(1f), style = MaterialTheme.typography.headlineMedium)
-            if(editMode==false)
-                Button({ editMode = true }) {
+            if(editorState==null)
+                Button({ editorState = EditorUiState(balk) }) {
                     Text("Edit")
                 }
             else
-                Button({ editMode = false }) {
+                Button({ editorState = null }) {
                     Text("Cancel")
                 }
         }
 
         // Width
-        var widthText by rememberSaveable{ mutableStateOf(balk.width.toString()) }
-        val widthNew = widthText.toDoubleOrNull()
         Row(Modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp),
@@ -67,45 +64,50 @@ fun BalkScreen(
         ) {
             Text("Width", modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
 
-            if(editMode)
+            editorState?.let { editor ->
                 OutlinedTextField(
-                    value = widthText,
+                    value = editor.widthText,
                     singleLine = true,
                     shape = shapes.large,
                     modifier = Modifier.weight(1f),
-                    onValueChange = {widthText=it},
+                    onValueChange = { editorState = editor.updateWidthText(it) },
                     label = {
-                        if(widthNew==null)
+                        if (editor.width == null)
                             Text("wrong value")
                     },
-                    isError = widthNew==null,
-    //                keyboardOptions = KeyboardOptions.Default.copy(
-    //                    imeAction = ImeAction.Done
-    //                ),
-    //                keyboardActions = KeyboardActions(
-    //                    onDone = { onKeyboardDone() }
-    //                )
+                    isError = editor.width == null,
+                    //                keyboardOptions = KeyboardOptions.Default.copy(
+                    //                    imeAction = ImeAction.Done
+                    //                ),
+                    //                keyboardActions = KeyboardActions(
+                    //                    onDone = { onKeyboardDone() }
+                    //                )
                 )
-            else
+            }?: run{
                 Text("${balk.width}", modifier = Modifier.weight(1f))
+            }
         }
 
         HorizontalDivider(Modifier.padding(vertical = 20.dp))
 
-        // CALCULATE BUTTON
-        if(editMode) {
+        editorState?.let { editor ->
+            // CALCULATE BUTTON
             Button(
-                enabled = widthNew!=null,
+                enabled = editor.isValid,
                 onClick = {
-                    updateBalk(balk.copy(width = widthNew!!))
-                    editMode = false
+                    updateBalk( balk.copy(
+                        width = editor.width!!
+                    ))
+                    editorState=null
                 }
             ) {
                 Text("Calculate")
             }
-        }else{
-            Text("The balk calculation:")
-            Text(calculation.toString())
+        }?:run{
+            // CALCULATION
+            Text("The balk calculation:", Modifier.padding(bottom = 10.dp))
+            CalculationScreen(calculation)
+
         }
     }
 }
