@@ -28,7 +28,10 @@ import ru.igormayachenkov.balk.domain.Calculation
 import ru.igormayachenkov.balk.ui.theme.BalkTheme
 
 @Composable
-fun BalkScreen(state: BalkUiState){
+fun BalkScreen(
+    state: BalkUiState,
+    updateBalk: (Balk)-> Unit
+){
     val (balk,calculation) = state
 
     var editMode by rememberSaveable{ mutableStateOf(false) }
@@ -88,9 +91,16 @@ fun BalkScreen(state: BalkUiState){
         }
 
         HorizontalDivider(Modifier.padding(vertical = 20.dp))
+
         // CALCULATE BUTTON
         if(editMode) {
-            Button({ editMode = false }) {
+            Button(
+                enabled = widthNew!=null,
+                onClick = {
+                    updateBalk(balk.copy(width = widthNew!!))
+                    editMode = false
+                }
+            ) {
                 Text("Calculate")
             }
         }else{
@@ -111,7 +121,7 @@ private fun Preview(){
                 BalkUiState(
                     balk = FakeData.balk,
                     calculation = Calculation.Success(0.13)
-                )
+                ), {}
             )
         }
     }

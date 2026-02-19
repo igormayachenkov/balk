@@ -8,17 +8,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import ru.igormayachenkov.balk.data.Balk
 import ru.igormayachenkov.balk.data.FakeBalkRepository
+import ru.igormayachenkov.balk.data.InMemoryBalkRepository
 
 
 @Composable
 fun AppContent(modifier: Modifier) {
     Box(modifier = modifier) {
 
-        val balkViewModel = remember { BalkViewModel(FakeBalkRepository()) }
+        val balkViewModel = remember { BalkViewModel(InMemoryBalkRepository()) }
         val balkUiState by balkViewModel.state.collectAsState()
 
         balkUiState?.let {
-            BalkScreen(it)
+            BalkScreen(
+                state = it,
+                updateBalk = balkViewModel::updateBalk
+            )
         }
     }
 }

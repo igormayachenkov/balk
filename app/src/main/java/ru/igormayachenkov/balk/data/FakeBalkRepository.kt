@@ -7,4 +7,8 @@ class FakeBalkRepository : BalkRepository {
     override val data: Flow<Balk> = flow {
         emit(FakeData.balk)
     }
+
+    override suspend fun updateBalk(balk: Balk) {
+
+    }
 }
