@@ -35,7 +35,7 @@ class BalkViewModel(
 
         // Calculate
         delay(2_000)
-        val calculation = CalculateUseCase(balk)()
+        val calculation = CalculateUseCase()(balk)
 
         // Set the result state
         emit(BalkUiState(

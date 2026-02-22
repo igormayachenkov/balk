@@ -4,6 +4,8 @@ object FakeData {
     val balk = Balk(
         width  = 0.05,
         height = 0.15,
-        length = 3.0
+        length = 3.0,
+        support = Support.SimplySupported,
+        load = Load.PointLoad(0.5, 300.0)
     )
 }

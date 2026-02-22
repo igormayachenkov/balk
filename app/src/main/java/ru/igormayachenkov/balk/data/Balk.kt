@@ -10,5 +10,7 @@ import kotlinx.serialization.Serializable
 data class Balk(
     val width : Double,
     val height: Double,
-    val length: Double
+    val length: Double,
+    val support: Support,
+    val load: Load
 )

@@ -32,12 +32,12 @@ fun CalculationScreen(calculation: Calculation){
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        "Deformation",
+                        "Deflection",
                         modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
-                        text = calculation.deformation.toString(),
+                        text = calculation.deflection.toString(),
                         modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.bodyLarge
                     )

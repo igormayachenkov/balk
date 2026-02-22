@@ -110,6 +110,18 @@ fun BalkScreen(
             }
         }
 
+        // SUPPORT
+        Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically,) {
+            Text("Support", modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+            Text("${balk.support}", modifier = Modifier.weight(1.5f))
+        }
+
+        // LOAD
+        Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically,) {
+            Text("Load", modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+            Text("${balk.load}", modifier = Modifier.weight(1.5f))
+        }
+
         HorizontalDivider(Modifier.padding(vertical = 20.dp))
 
         editorState?.let { editor ->
