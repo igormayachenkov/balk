@@ -1,19 +1,17 @@
 package ru.igormayachenkov.balk.ui
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.shapes
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,9 +21,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ru.igormayachenkov.balk.R
 import ru.igormayachenkov.balk.data.Balk
 import ru.igormayachenkov.balk.data.FakeData
 import ru.igormayachenkov.balk.domain.Calculation
@@ -35,11 +34,14 @@ import ru.igormayachenkov.balk.ui.theme.BalkTheme
 fun BalkScreen(
     state: BalkUiState,
     updateBalk: (Balk)-> Unit,
-    initialEditorUiState: EditorState?=null
 ){
     val (balk,calculation) = state
 
-    var editorState by rememberSaveable{ mutableStateOf<EditorState?>(initialEditorUiState) }
+    val sectionModifier = Modifier
+        .fillMaxWidth()
+        .padding(3.dp)
+        .border(1.dp, color = MaterialTheme.colorScheme.onSurface, RoundedCornerShape(10.dp))
+        .padding(3.dp)
 
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -50,116 +52,120 @@ fun BalkScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Text("Balk", Modifier.weight(1f), style = MaterialTheme.typography.headlineMedium)
-            if(editorState==null)
-                Button({ editorState = EditorState(balk) }) {
-                    Text("Edit")
-                }
-            else
-                OutlinedButton({ editorState = null }) {
-                    Text("Cancel")
-                }
+            Text("Balk Calculator", Modifier.weight(1f), style = MaterialTheme.typography.headlineMedium)
         }
 
+        //------------------------------------------------------------------------------------------
+        // SHAPE Section
+        Column (sectionModifier) {
+            var showEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
 
-        // WIDTH
-        Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically,) {
+            SectionTitle("Shape") {showEditor=true}
 
-            Text("Width", modifier = Modifier.weight(1.5f), style = MaterialTheme.typography.bodyMedium)
-
-            editorState?.let { editor -> with(editor) {
-                NumField(
-                    text    = widthText,
-                    isError = width == null,
-                    onChange= { editorState = updateWidth(it) }
+            // Width
+            Row(
+                Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "Width",
+                    modifier = Modifier.weight(1.5f),
+                    style = MaterialTheme.typography.bodyMedium
                 )
-            }}?: run{
                 Text("${balk.width}", modifier = Modifier.weight(1f))
             }
-        }
 
-        // HEIGHT
-        Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically,) {
-
-            Text("Height", modifier = Modifier.weight(1.5f), style = MaterialTheme.typography.bodyMedium)
-
-            editorState?.let { editor -> with(editor) {
-                NumField(
-                    text    = heightText,
-                    isError = height == null,
-                    onChange= { editorState = updateHeight(it) }
+            // Height
+            Row(
+                Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "Height",
+                    modifier = Modifier.weight(1.5f),
+                    style = MaterialTheme.typography.bodyMedium
                 )
-            }}?: run{
                 Text("${balk.height}", modifier = Modifier.weight(1f))
             }
+
+            // Length
+            Row(
+                Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "Length",
+                    modifier = Modifier.weight(1.5f),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text("${balk.length}", modifier = Modifier.weight(1f))
+            }
+
+            // Shape EDITOR DIALOG
+            if(showEditor) ShapeEditor(
+                balk = balk,
+                onCancel = {showEditor=false},
+                onSave = {balk->
+                    showEditor=false
+                    updateBalk(balk)
+                },
+            )
         }
 
-        // LENGTH
-        Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically,) {
+        //------------------------------------------------------------------------------------------
+        // SUPPORT SECTION
+        Column(sectionModifier) {
+            var showEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
 
-            Text("Length", modifier = Modifier.weight(1.5f), style = MaterialTheme.typography.bodyMedium)
+            SectionTitle("Support") {showEditor=true}
 
-            editorState?.let { editor -> with(editor) {
-                NumField(
-                    text    = lengthText,
-                    isError = length == null,
-                    onChange= { editorState = updateLength(it) }
+            Row(
+                Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "Type",
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyMedium
                 )
-            }}?: run{
-                Text("${balk.length}", modifier = Modifier.weight(1f))
+                Text("${balk.support}", modifier = Modifier.weight(1.5f))
             }
         }
 
-        // SUPPORT
-        Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically,) {
-            Text("Support", modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-            Text("${balk.support}", modifier = Modifier.weight(1.5f))
-        }
+        //------------------------------------------------------------------------------------------
+        // LOAD Section
+        Column(sectionModifier) {
+            var showEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
 
-        // LOAD
-        Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically,) {
-            Text("Load", modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-            Text("${balk.load}", modifier = Modifier.weight(1.5f))
+            SectionTitle("Load") {showEditor=true}
+
+            Row(
+                Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "Load",
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text("${balk.load}", modifier = Modifier.weight(1.5f))
+            }
         }
 
         HorizontalDivider(Modifier.padding(vertical = 20.dp))
 
-        editorState?.let { editor ->
-            // CALCULATE BUTTON
-            Button(
-                enabled = editor.isValid,
-                onClick = {
-                    updateBalk( editor.copyToBalk(balk) )
-                    editorState=null
-                }
-            ) {
-                Text("Calculate")
-            }
-        }?:run{
-            // CALCULATION
-            Text("The balk calculation:", Modifier.padding(bottom = 10.dp))
-            CalculationScreen(calculation)
-
-        }
+        // CALCULATION
+        Text("The balk calculation:", Modifier.padding(bottom = 10.dp))
+        CalculationScreen(calculation)
     }
 }
 @Composable
-private fun RowScope.NumField(text:String,isError:Boolean,onChange:(String)->Unit){
-    OutlinedTextField(
-        value = text,
-        singleLine = true,
-        shape = shapes.medium,
-        modifier = Modifier.weight(1f),
-        onValueChange = onChange,
-        label = {
-            if (isError)
-                Text("wrong value")
-        },
-        isError = isError,
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number
-        ),
-    )
+private fun SectionTitle(text:String,onEdit:()->Unit){
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Text(text, Modifier.padding(start = 10.dp))
+        IconButton(onEdit) { Icon(painterResource(R.drawable.edit),"Edit") }
+    }
+    HorizontalDivider()
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -174,22 +180,6 @@ private fun Preview(){
                     balk = FakeData.balk,
                     calculation = Calculation.Success(0.13)
                 ), {}
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewEditor(){
-    BalkTheme(darkTheme = true) {
-        Surface() {
-            BalkScreen(
-                BalkUiState(
-                    balk = FakeData.balk,
-                    calculation = Calculation.Success(0.13)
-                ), {},
-                EditorState(FakeData.balk)
             )
         }
     }
