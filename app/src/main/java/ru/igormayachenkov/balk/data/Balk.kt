@@ -8,9 +8,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Balk(
-    val width : Double,
-    val height: Double,
-    val length: Double,
-    val support: Support,
-    val load: Load
+    val form    : Form,
+    val support : Support,
+    val load    : Load
 )

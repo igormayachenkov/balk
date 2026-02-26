@@ -2,6 +2,7 @@ package ru.igormayachenkov.balk.data
 
 import kotlinx.serialization.Serializable
 
+@Serializable
 sealed interface Load {
 
     @Serializable

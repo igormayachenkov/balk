@@ -1,5 +1,6 @@
 package ru.igormayachenkov.balk.ui
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import ru.igormayachenkov.balk.data.Balk
 import ru.igormayachenkov.balk.data.FakeData
 import ru.igormayachenkov.balk.domain.Calculation
 import ru.igormayachenkov.balk.ui.theme.BalkTheme
+import kotlinx.serialization.json.Json
 
 @Composable
 fun BalkScreen(
@@ -36,6 +38,8 @@ fun BalkScreen(
     updateBalk: (Balk)-> Unit,
 ){
     val (balk,calculation) = state
+
+    Log.w("myapp.BalkScreen","balk: ${Json.encodeToString(balk)}")
 
     val sectionModifier = Modifier
         .fillMaxWidth()
@@ -56,11 +60,12 @@ fun BalkScreen(
         }
 
         //------------------------------------------------------------------------------------------
-        // SHAPE Section
+        // FORM Section
         Column (sectionModifier) {
+            val (width,height,length) = balk.form as ru.igormayachenkov.balk.data.Form.Rectangle
             var showEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
 
-            SectionTitle("Shape") {showEditor=true}
+            SectionTitle("Form") {showEditor=true}
 
             // Width
             Row(
@@ -72,7 +77,7 @@ fun BalkScreen(
                     modifier = Modifier.weight(1.5f),
                     style = MaterialTheme.typography.bodyMedium
                 )
-                Text("${balk.width}", modifier = Modifier.weight(1f))
+                Text("${width}", modifier = Modifier.weight(1f))
             }
 
             // Height
@@ -85,7 +90,7 @@ fun BalkScreen(
                     modifier = Modifier.weight(1.5f),
                     style = MaterialTheme.typography.bodyMedium
                 )
-                Text("${balk.height}", modifier = Modifier.weight(1f))
+                Text("${height}", modifier = Modifier.weight(1f))
             }
 
             // Length
@@ -98,11 +103,11 @@ fun BalkScreen(
                     modifier = Modifier.weight(1.5f),
                     style = MaterialTheme.typography.bodyMedium
                 )
-                Text("${balk.length}", modifier = Modifier.weight(1f))
+                Text("${length}", modifier = Modifier.weight(1f))
             }
 
             // Shape EDITOR DIALOG
-            if(showEditor) ShapeEditor(
+            if(showEditor) FormEditor(
                 balk = balk,
                 onCancel = {showEditor=false},
                 onSave = {balk->

@@ -3,9 +3,10 @@ package ru.igormayachenkov.balk.ui
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import ru.igormayachenkov.balk.data.Balk
+import ru.igormayachenkov.balk.data.Form
 
 @Parcelize
-data class EditorState(
+data class FormEditorState(
     val widthText: String,
     val width: Double?,
     val heightText: String,
@@ -14,13 +15,13 @@ data class EditorState(
     val length: Double?,
 ): Parcelable{
 
-    constructor(balk: Balk) : this(
-        width     = balk.width,
-        widthText = balk.width.toString(),
-        height    = balk.height,
-        heightText= balk.height.toString(),
-        length    = balk.length,
-        lengthText= balk.length.toString()
+    constructor(form: Form.Rectangle) : this(
+        width     = form.width,
+        widthText = form.width.toString(),
+        height    = form.height,
+        heightText= form.height.toString(),
+        length    = form.length,
+        lengthText= form.length.toString()
     )
 
     fun updateWidth(text: String) = copy(
@@ -40,8 +41,10 @@ data class EditorState(
         get() = width!=null && height!=null && length!=null
 
     fun copyToBalk(balk: Balk): Balk = balk.copy(
-        width  = width!!,
-        height = height!!,
-        length = length!!
+        form = Form.Rectangle(
+            width  = width!!,
+            height = height!!,
+            length = length!!
+        )
     )
 }

@@ -33,12 +33,14 @@ import ru.igormayachenkov.balk.data.FakeData
 import ru.igormayachenkov.balk.ui.theme.BalkTheme
 
 @Composable
-fun ShapeEditor(
+fun FormEditor(
     balk: Balk,
     onCancel: () -> Unit,
     onSave: (Balk)-> Unit,
 ) {
-    var editorState by rememberSaveable{ mutableStateOf<EditorState>(EditorState(balk)) }
+    var formEditorState by rememberSaveable{ mutableStateOf<FormEditorState>(
+        FormEditorState(balk.form as ru.igormayachenkov.balk.data.Form.Rectangle)
+    ) }
 
     Dialog(onDismissRequest = { onCancel() }) {
         Card(
@@ -48,7 +50,7 @@ fun ShapeEditor(
             shape = RoundedCornerShape(16.dp),
         ) {
             Text(
-                text = "The balk shape and size",
+                text = "The balk form and size",
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentSize(Alignment.Center),
@@ -59,11 +61,11 @@ fun ShapeEditor(
 
                 Text("Width", modifier = Modifier.weight(1.5f), style = MaterialTheme.typography.bodyMedium)
 
-                with(editorState) {
+                with(formEditorState) {
                     NumField(
                         text    = widthText,
                         isError = width == null,
-                        onChange= { editorState = updateWidth(it) }
+                        onChange= { formEditorState = updateWidth(it) }
                     )
                 }
             }
@@ -73,11 +75,11 @@ fun ShapeEditor(
 
                 Text("Height", modifier = Modifier.weight(1.5f), style = MaterialTheme.typography.bodyMedium)
 
-                with(editorState) {
+                with(formEditorState) {
                     NumField(
                         text    = heightText,
                         isError = height == null,
-                        onChange= { editorState = updateHeight(it) }
+                        onChange= { formEditorState = updateHeight(it) }
                     )
                 }
             }
@@ -87,11 +89,11 @@ fun ShapeEditor(
 
                 Text("Length", modifier = Modifier.weight(1.5f), style = MaterialTheme.typography.bodyMedium)
 
-                with(editorState) {
+                with(formEditorState) {
                     NumField(
                         text    = lengthText,
                         isError = length == null,
-                        onChange= { editorState = updateLength(it) }
+                        onChange= { formEditorState = updateLength(it) }
                     )
                 }
             }
@@ -103,7 +105,7 @@ fun ShapeEditor(
                     Text("Cancel")
                 }
                 Button({
-                    onSave( editorState.copyToBalk(balk) )
+                    onSave( formEditorState.copyToBalk(balk) )
                 }) {
                     Text("Save")
                 }
@@ -140,7 +142,7 @@ private fun RowScope.NumField(text:String,isError:Boolean,onChange:(String)->Uni
 @Composable
 private fun Preview(){
     BalkTheme(darkTheme = true) {
-        ShapeEditor(FakeData.balk, {}, {})
+        FormEditor(FakeData.balk, {}, {})
     }
 }
 
