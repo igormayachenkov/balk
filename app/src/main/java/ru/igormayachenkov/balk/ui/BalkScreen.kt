@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import ru.igormayachenkov.balk.R
 import ru.igormayachenkov.balk.data.Balk
 import ru.igormayachenkov.balk.data.FakeData
-import ru.igormayachenkov.balk.domain.Calculation
+import ru.igormayachenkov.balk.data.Calculation
 import ru.igormayachenkov.balk.ui.theme.BalkTheme
 import kotlinx.serialization.json.Json
 

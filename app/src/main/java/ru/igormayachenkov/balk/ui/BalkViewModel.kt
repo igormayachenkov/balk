@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import ru.igormayachenkov.balk.data.Balk
 import ru.igormayachenkov.balk.data.BalkRepository
 import ru.igormayachenkov.balk.domain.CalculateUseCase
-import ru.igormayachenkov.balk.domain.Calculation
+import ru.igormayachenkov.balk.data.Calculation
 
 data class BalkUiState(
     val balk: Balk,

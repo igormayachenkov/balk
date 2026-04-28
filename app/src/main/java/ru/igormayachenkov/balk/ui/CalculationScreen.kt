@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ru.igormayachenkov.balk.domain.Calculation
+import ru.igormayachenkov.balk.data.Calculation
 
 @Composable
 fun CalculationScreen(calculation: Calculation){

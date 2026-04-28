@@ -8,7 +8,7 @@ import ru.igormayachenkov.balk.data.Balk
 import ru.igormayachenkov.balk.data.Load
 import ru.igormayachenkov.balk.data.Support
 import ru.igormayachenkov.balk.domain.CalculateUseCase
-import ru.igormayachenkov.balk.domain.Calculation
+import ru.igormayachenkov.balk.data.Calculation
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -21,9 +21,11 @@ class Balk50x150x3000UnitTest {
     @Before
     fun calculate(){
         val balk = Balk(
-            width  = 0.05,
-            height = 0.15,
-            length = 3.0,
+            form = ru.igormayachenkov.balk.data.Form.Rectangle(
+                width  = 0.05,
+                height = 0.15,
+                length = 3.0
+            ),
             support = Support.SimplySupported,
             load = Load.PointLoad(0.5, 300.0)
         )

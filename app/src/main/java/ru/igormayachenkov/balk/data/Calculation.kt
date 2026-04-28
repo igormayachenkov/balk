@@ -1,4 +1,4 @@
-package ru.igormayachenkov.balk.domain
+package ru.igormayachenkov.balk.data
 
 sealed interface Calculation {
     data object Progress : Calculation
