@@ -12,10 +12,10 @@ import ru.igormayachenkov.balk.data.InMemoryBalkRepository
 
 
 @Composable
-fun AppContent(modifier: Modifier) {
+fun AppContent(modifier: Modifier, balkViewModel: BalkViewModel) {
     Box(modifier = modifier) {
 
-        val balkViewModel = remember { BalkViewModel(InMemoryBalkRepository()) }
+        //val balkViewModel = remember { BalkViewModel(InMemoryBalkRepository()) }
         val balkUiState by balkViewModel.state.collectAsState()
 
         balkUiState?.let {

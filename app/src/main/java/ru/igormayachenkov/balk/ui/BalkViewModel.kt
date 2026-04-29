@@ -14,13 +14,14 @@ import ru.igormayachenkov.balk.data.Balk
 import ru.igormayachenkov.balk.data.BalkRepository
 import ru.igormayachenkov.balk.domain.CalculateUseCase
 import ru.igormayachenkov.balk.data.Calculation
+import javax.inject.Inject
 
 data class BalkUiState(
     val balk: Balk,
     val calculation: Calculation
 )
 
-class BalkViewModel(
+class BalkViewModel @Inject constructor(
     val repository: BalkRepository
 ) {
     val scope = CoroutineScope(Dispatchers.Default)
