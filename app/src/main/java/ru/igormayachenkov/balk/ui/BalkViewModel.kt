@@ -1,5 +1,8 @@
 package ru.igormayachenkov.balk.ui
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -21,10 +24,11 @@ data class BalkUiState(
     val calculation: Calculation
 )
 
+@HiltViewModel
 class BalkViewModel @Inject constructor(
     val repository: BalkRepository
-) {
-    val scope = CoroutineScope(Dispatchers.Default)
+) : ViewModel() {
+    //val scope = CoroutineScope(Dispatchers.Default)
 
     // DATA
     val state : StateFlow<BalkUiState?> = repository.data.transform { balk ->
@@ -34,7 +38,7 @@ class BalkViewModel @Inject constructor(
             calculation = Calculation.Progress
         ))
 
-        // Calculate
+        // Calculate balk after each data change
         delay(2_000)
         val calculation = CalculateUseCase()(balk)
 
@@ -44,14 +48,14 @@ class BalkViewModel @Inject constructor(
             calculation = calculation
         ))
     }.stateIn(
-        scope = scope,
+        scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = null
     )
 
     // ACTIONS
     fun updateBalk(newBalk: Balk){
-        scope.launch {
+        viewModelScope.launch {
             repository.updateBalk(newBalk)
         }
     }

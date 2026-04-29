@@ -53,8 +53,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json) // Json serialization
     // Hilt
     implementation(libs.hilt.android)
-    //implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
 
 
 

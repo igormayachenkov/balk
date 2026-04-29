@@ -6,16 +6,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ru.igormayachenkov.balk.data.Balk
 import ru.igormayachenkov.balk.data.FakeBalkRepository
 import ru.igormayachenkov.balk.data.InMemoryBalkRepository
 
 
 @Composable
-fun AppContent(modifier: Modifier, balkViewModel: BalkViewModel) {
+fun AppContent(modifier: Modifier) {
     Box(modifier = modifier) {
 
         //val balkViewModel = remember { BalkViewModel(InMemoryBalkRepository()) }
+        val balkViewModel = hiltViewModel<BalkViewModel>()
         val balkUiState by balkViewModel.state.collectAsState()
 
         balkUiState?.let {
