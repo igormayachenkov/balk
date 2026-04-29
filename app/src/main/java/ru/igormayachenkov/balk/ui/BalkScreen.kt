@@ -31,6 +31,7 @@ import ru.igormayachenkov.balk.data.FakeData
 import ru.igormayachenkov.balk.data.Calculation
 import ru.igormayachenkov.balk.ui.theme.BalkTheme
 import kotlinx.serialization.json.Json
+import ru.igormayachenkov.balk.data.Form
 
 @Composable
 fun BalkScreen(
@@ -62,49 +63,100 @@ fun BalkScreen(
         //------------------------------------------------------------------------------------------
         // FORM Section
         Column (sectionModifier) {
-            val (width,height,length) = balk.form as ru.igormayachenkov.balk.data.Form.Rectangle
             var showEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
 
             SectionTitle("Form") {showEditor=true}
 
-            // Width
+            // Class
             Row(
                 Modifier.fillMaxWidth().padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    "Width",
+                    "Class",
                     modifier = Modifier.weight(1.5f),
                     style = MaterialTheme.typography.bodyMedium
                 )
-                Text("${width}", modifier = Modifier.weight(1f))
+                Text("${balk.form.javaClass.simpleName}", modifier = Modifier.weight(1f))
             }
 
-            // Height
-            Row(
-                Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    "Height",
-                    modifier = Modifier.weight(1.5f),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text("${height}", modifier = Modifier.weight(1f))
+            when(balk.form){
+
+                // RECTANGLE
+                is Form.Rectangle -> {
+                    val (width,height,length) = balk.form as ru.igormayachenkov.balk.data.Form.Rectangle
+                    // Width
+                    Row(
+                        Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            "Width",
+                            modifier = Modifier.weight(1.5f),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text("${width}", modifier = Modifier.weight(1f))
+                    }
+
+                    // Height
+                    Row(
+                        Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            "Height",
+                            modifier = Modifier.weight(1.5f),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text("${height}", modifier = Modifier.weight(1f))
+                    }
+
+                    // Length
+                    Row(
+                        Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            "Length",
+                            modifier = Modifier.weight(1.5f),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text("${length}", modifier = Modifier.weight(1f))
+                    }
+                }
+
+                // CIRCLE
+                is Form.Circle -> {
+                    val (radius,length) = balk.form as ru.igormayachenkov.balk.data.Form.Circle
+                    // Radius
+                    Row(
+                        Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            "Radius",
+                            modifier = Modifier.weight(1.5f),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text("${radius}", modifier = Modifier.weight(1f))
+                    }
+
+                    // Length
+                    Row(
+                        Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            "Length",
+                            modifier = Modifier.weight(1.5f),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text("${length}", modifier = Modifier.weight(1f))
+                    }
+
+                }
             }
 
-            // Length
-            Row(
-                Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    "Length",
-                    modifier = Modifier.weight(1.5f),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text("${length}", modifier = Modifier.weight(1f))
-            }
 
             // Shape EDITOR DIALOG
             if(showEditor) FormEditor(
