@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,10 +22,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ru.igormayachenkov.balk.R
 import ru.igormayachenkov.balk.data.Balk
 import ru.igormayachenkov.balk.data.FakeData
 import ru.igormayachenkov.balk.data.Calculation
@@ -152,7 +148,7 @@ fun BalkScreen(
             }
         }
         // Form EDITOR DIALOG
-        if(formEditor) FormEditor(
+        if(formEditor) FormSectionEditor(
             balk = balk,
             onCancel = {formEditor=false},
             onSave = {balk->
@@ -164,7 +160,8 @@ fun BalkScreen(
 
         //------------------------------------------------------------------------------------------
         // SUPPORT SECTION
-        Section("Support",{}) {
+        var supportEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
+        Section("Support",{supportEditor=true}) {
             Row(
                 Modifier.fillMaxWidth().padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -177,10 +174,20 @@ fun BalkScreen(
                 Text("${balk.support}", modifier = Modifier.weight(1.5f))
             }
         }
+        // Support EDITOR DIALOG
+        if(supportEditor) SupportSectionEditor(
+            balk = balk,
+            onCancel = {supportEditor=false},
+            onSave = {balk->
+                supportEditor=false
+                updateBalk(balk)
+            },
+        )
 
         //------------------------------------------------------------------------------------------
         // LOAD Section
-        Section("Load", {}) {
+        var loadEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
+        Section("Load", {loadEditor=true}) {
             Row(
                 Modifier.fillMaxWidth().padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -193,9 +200,19 @@ fun BalkScreen(
                 Text("${balk.load}", modifier = Modifier.weight(1.5f))
             }
         }
+        // Load EDITOR DIALOG
+        if(loadEditor) LoadSectionEditor(
+            balk = balk,
+            onCancel = {loadEditor=false},
+            onSave = {balk->
+                loadEditor=false
+                updateBalk(balk)
+            },
+        )
 
         HorizontalDivider(Modifier.padding(vertical = 20.dp))
 
+        //==========================================================================================
         // CALCULATION
         Text("The balk calculation:", Modifier.padding(bottom = 10.dp))
         CalculationScreen(calculation)

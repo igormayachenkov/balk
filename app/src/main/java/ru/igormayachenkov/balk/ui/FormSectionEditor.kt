@@ -1,12 +1,8 @@
 package ru.igormayachenkov.balk.ui
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,79 +11,76 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import ru.igormayachenkov.balk.data.Balk
 import ru.igormayachenkov.balk.data.FakeData
 import ru.igormayachenkov.balk.ui.theme.BalkTheme
 
 @Composable
-fun FormEditor(
+fun FormSectionEditor(
     balk: Balk,
     onCancel: () -> Unit,
     onSave: (Balk)-> Unit,
 ) {
-    var formEditorState by rememberSaveable{ mutableStateOf<FormEditorState>(
+    var editorState by rememberSaveable{ mutableStateOf<FormEditorState>(
         FormEditorState.fromForm(balk.form))
     }
 
     SectionEditor(
-        title = "The balk form and size",
+        title = "The Balk Form and Size",
         onCancel = onCancel,
         onSave = {
-            onSave( formEditorState.copyToBalk(balk) )
+            onSave( editorState.copyToBalk(balk) )
         },
         onSaveEnabled = {
-            formEditorState.isValid
+            editorState.isValid
         }
     ) {
 
         // FORM CLASS
         SectionRow("Class") {
-            with(formEditorState) {
+            with(editorState) {
                 FormClassDropdownMenu(
                     formClass = formClass,
-                    onChange  = {formEditorState = updateClass(it)}
+                    onChange  = {editorState = updateClass(it)}
                 )
             }
         }
 
         // WIDTH
-        if(formEditorState.formClass == FormClass.RECTANGLE) {
+        if(editorState.formClass == FormClass.RECTANGLE) {
             SectionRow("Width") {
-                with(formEditorState) {
+                with(editorState) {
                     SectionNumField(
                         text    = widthText,
                         isError = width == null,
-                        onChange= { formEditorState = updateWidth(it) }
+                        onChange= { editorState = updateWidth(it) }
                     )
                 }
             }
         }
 
         // HEIGHT
-        if(formEditorState.formClass == FormClass.RECTANGLE) {
+        if(editorState.formClass == FormClass.RECTANGLE) {
             SectionRow("Height") {
-                with(formEditorState) {
+                with(editorState) {
                     SectionNumField(
                         text = heightText,
                         isError = height == null,
-                        onChange = { formEditorState = updateHeight(it) }
+                        onChange = { editorState = updateHeight(it) }
                     )
                 }
             }
         }
 
         // RADIUS
-        if(formEditorState.formClass == FormClass.CIRCLE) {
+        if(editorState.formClass == FormClass.CIRCLE) {
             SectionRow("Radius") {
-                with(formEditorState) {
+                with(editorState) {
                     SectionNumField(
                         text    = radiusText,
                         isError = radius == null,
-                        onChange= { formEditorState = updateRadius(it) }
+                        onChange= { editorState = updateRadius(it) }
                     )
                 }
             }
@@ -95,11 +88,11 @@ fun FormEditor(
 
         // LENGTH
         SectionRow("Length") {
-            with(formEditorState) {
+            with(editorState) {
                 SectionNumField(
                     text    = lengthText,
                     isError = length == null,
-                    onChange= { formEditorState = updateLength(it) }
+                    onChange= { editorState = updateLength(it) }
                 )
             }
         }
@@ -107,7 +100,7 @@ fun FormEditor(
 }
 
 @Composable
-fun FormClassDropdownMenu(
+private fun FormClassDropdownMenu(
     formClass: FormClass,
     onChange : (FormClass)->Unit
 ) {
@@ -142,7 +135,7 @@ fun FormClassDropdownMenu(
 @Composable
 private fun Preview(){
     BalkTheme(darkTheme = true) {
-        FormEditor(FakeData.balk, {}, {})
+        FormSectionEditor(FakeData.balk, {}, {})
     }
 }
 

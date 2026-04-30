@@ -8,9 +8,6 @@ object FakeData {
             length = 3.0,
         ),
         support = Support.SimplySupported,
-        load = Load.PointLoad(
-            a = 0.5,
-            P = 300.0
-        )
+        load = Load.CenterPoint
     )
 }
