@@ -2,8 +2,10 @@ package ru.igormayachenkov.balk.ui
 
 import android.util.Log
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,12 +44,6 @@ fun BalkScreen(
 
     Log.w("myapp.BalkScreen","balk: ${Json.encodeToString(balk)}")
 
-    val sectionModifier = Modifier
-        .fillMaxWidth()
-        .padding(3.dp)
-        .border(1.dp, color = MaterialTheme.colorScheme.onSurface, RoundedCornerShape(10.dp))
-        .padding(3.dp)
-
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
 
         // TITLE
@@ -62,10 +58,8 @@ fun BalkScreen(
 
         //------------------------------------------------------------------------------------------
         // FORM Section
-        Column (sectionModifier) {
-            var showEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
-
-            SectionTitle("Form") {showEditor=true}
+        var formEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
+        Section("Form", onClick={formEditor=true}) {
 
             // Class
             Row(
@@ -156,26 +150,21 @@ fun BalkScreen(
 
                 }
             }
-
-
-            // Shape EDITOR DIALOG
-            if(showEditor) FormEditor(
-                balk = balk,
-                onCancel = {showEditor=false},
-                onSave = {balk->
-                    showEditor=false
-                    updateBalk(balk)
-                },
-            )
         }
+        // Form EDITOR DIALOG
+        if(formEditor) FormEditor(
+            balk = balk,
+            onCancel = {formEditor=false},
+            onSave = {balk->
+                formEditor=false
+                updateBalk(balk)
+            },
+        )
+
 
         //------------------------------------------------------------------------------------------
         // SUPPORT SECTION
-        Column(sectionModifier) {
-            var showEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
-
-            SectionTitle("Support") {showEditor=true}
-
+        Section("Support",{}) {
             Row(
                 Modifier.fillMaxWidth().padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -191,11 +180,7 @@ fun BalkScreen(
 
         //------------------------------------------------------------------------------------------
         // LOAD Section
-        Column(sectionModifier) {
-            var showEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
-
-            SectionTitle("Load") {showEditor=true}
-
+        Section("Load", {}) {
             Row(
                 Modifier.fillMaxWidth().padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -216,13 +201,32 @@ fun BalkScreen(
         CalculationScreen(calculation)
     }
 }
+
 @Composable
-private fun SectionTitle(text:String,onEdit:()->Unit){
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-        Text(text, Modifier.padding(start = 10.dp))
-        IconButton(onEdit) { Icon(painterResource(R.drawable.edit),"Edit") }
+private fun Section(
+    title: String,
+    onClick: ()->Unit,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp)
+            .border(1.dp, color = MaterialTheme.colorScheme.onSurface, RoundedCornerShape(10.dp))
+            .padding(5.dp)
+            .clickable(onClick=onClick)
+    ){
+        // TITLE
+        Text(title, Modifier.padding(start = 10.dp), style = MaterialTheme.typography.titleMedium)
+
+        HorizontalDivider()
+
+        // CONTENT
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            content = content
+        )
     }
-    HorizontalDivider()
 }
 
 //--------------------------------------------------------------------------------------------------
