@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import ru.igormayachenkov.balk.data.Balk
 import ru.igormayachenkov.balk.data.FakeData
+import ru.igormayachenkov.balk.data.Load
 import ru.igormayachenkov.balk.data.Support
 import ru.igormayachenkov.balk.ui.theme.BalkTheme
 
@@ -23,28 +24,25 @@ fun SupportSectionEditor(
     onCancel: () -> Unit,
     onSave: (Balk)-> Unit,
 ) {
-    var editorState by rememberSaveable {
-        mutableStateOf<Support>(balk.support)
-    }
-
     SectionEditor(
         title = "The Balk Support",
         onCancel = onCancel,
-        onSave = {
-            onSave(balk.copy(support = editorState))
-        },
-        onSaveEnabled = { true }
     ) {
-
-        // SUPPORT CLASS
-        SectionRow("Class") {
-            with(editorState) {
-                SupportClassDropdownMenu(
-                    support = editorState,
-                    onChange  = {editorState = it}
-                )
-            }
-        }
+        SectionOption(
+            text = "Simply Supported",
+            isChecked = balk.support==Support.SimplySupported,
+            onClick = { onSave(balk.copy(support = Support.SimplySupported)) }
+        )
+        SectionOption(
+            text = "Fixed - Hinged",
+            isChecked = balk.support==Support.FixedHinged,
+            onClick = { onSave(balk.copy(support = Support.FixedHinged)) }
+        )
+        SectionOption(
+            text = "Fixed - Fixed",
+            isChecked = balk.support==Support.FixedFixed,
+            onClick = { onSave(balk.copy(support = Support.FixedFixed)) }
+        )
 
     }
 }

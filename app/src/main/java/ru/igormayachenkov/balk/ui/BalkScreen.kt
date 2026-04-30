@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -58,15 +59,8 @@ fun BalkScreen(
         Section("Form", onClick={formEditor=true}) {
 
             // Class
-            Row(
-                Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    "Class",
-                    modifier = Modifier.weight(1.5f),
-                    style = MaterialTheme.typography.bodyMedium
-                )
+            SectionRow {
+                SectionLabel("Type")
                 Text("${balk.form.javaClass.simpleName}", modifier = Modifier.weight(1f))
             }
 
@@ -76,41 +70,20 @@ fun BalkScreen(
                 is Form.Rectangle -> {
                     val (width,height,length) = balk.form as ru.igormayachenkov.balk.data.Form.Rectangle
                     // Width
-                    Row(
-                        Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            "Width",
-                            modifier = Modifier.weight(1.5f),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                    SectionRow{
+                        SectionLabel("Width")
                         Text("${width}", modifier = Modifier.weight(1f))
                     }
 
                     // Height
-                    Row(
-                        Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            "Height",
-                            modifier = Modifier.weight(1.5f),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                    SectionRow {
+                        SectionLabel("Height")
                         Text("${height}", modifier = Modifier.weight(1f))
                     }
 
                     // Length
-                    Row(
-                        Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            "Length",
-                            modifier = Modifier.weight(1.5f),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                    SectionRow {
+                        SectionLabel("Length")
                         Text("${length}", modifier = Modifier.weight(1f))
                     }
                 }
@@ -119,28 +92,14 @@ fun BalkScreen(
                 is Form.Circle -> {
                     val (radius,length) = balk.form as ru.igormayachenkov.balk.data.Form.Circle
                     // Radius
-                    Row(
-                        Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            "Radius",
-                            modifier = Modifier.weight(1.5f),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                    SectionRow {
+                        SectionLabel("Radius")
                         Text("${radius}", modifier = Modifier.weight(1f))
                     }
 
                     // Length
-                    Row(
-                        Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            "Length",
-                            modifier = Modifier.weight(1.5f),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                    SectionRow{
+                        SectionLabel("Length")
                         Text("${length}", modifier = Modifier.weight(1f))
                     }
 
@@ -162,15 +121,8 @@ fun BalkScreen(
         // SUPPORT SECTION
         var supportEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
         Section("Support",{supportEditor=true}) {
-            Row(
-                Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    "Type",
-                    modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.bodyMedium
-                )
+            SectionRow{
+                SectionLabel("Type")
                 Text("${balk.support}", modifier = Modifier.weight(1.5f))
             }
         }
@@ -188,16 +140,14 @@ fun BalkScreen(
         // LOAD Section
         var loadEditor by rememberSaveable{ mutableStateOf<Boolean>(false) }
         Section("Load", {loadEditor=true}) {
-            Row(
-                Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    "Load",
-                    modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text("${balk.load}", modifier = Modifier.weight(1.5f))
+            SectionRow {
+                SectionLabel("Type")
+                Text("${balk.load.loadType}", modifier = Modifier.weight(1.5f))
+            }
+
+            SectionRow {
+                SectionLabel( "Weight" )
+                Text("${balk.load.weight}", modifier = Modifier.weight(1.5f))
             }
         }
         // Load EDITOR DIALOG

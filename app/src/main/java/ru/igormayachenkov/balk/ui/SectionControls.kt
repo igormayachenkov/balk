@@ -1,18 +1,22 @@
 package ru.igormayachenkov.balk.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.OutlinedButton
@@ -21,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -33,8 +38,6 @@ import ru.igormayachenkov.balk.ui.theme.BalkTheme
 fun SectionEditor(
     title: String,
     onCancel: () -> Unit,
-    onSave  : ()-> Unit,
-    onSaveEnabled  : ()-> Boolean,
     content: @Composable ColumnScope.() -> Unit
 ){
     Dialog(onDismissRequest = onCancel) {
@@ -56,35 +59,48 @@ fun SectionEditor(
             HorizontalDivider(Modifier.padding(bottom = 20.dp))
 
             // CONTENT
-            Column(Modifier.fillMaxWidth(), content=content)
+            content()
 
-            HorizontalDivider(Modifier.padding(vertical = 20.dp))
-
-            // BUTTONS
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                OutlinedButton(onCancel) {
-                    Text("Cancel")
-                }
-                Button(
-                    onClick = onSave,
-                    enabled = onSaveEnabled()
-                ) {
-                    Text("Save")
-                }
-            }
-
+            Spacer(Modifier.height(10.dp))
         }
     }
 }
 @Composable
-fun SectionRow(label:String, content: @Composable (RowScope.() -> Unit)) {
+fun SectionButtons(
+    onCancel: () -> Unit,
+    onSave  : (()->Unit)?,
+    onSaveEnabled  : ()-> Boolean,
+){
+    HorizontalDivider(Modifier.padding(vertical = 20.dp))
+
+    // BUTTONS
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+        OutlinedButton(onCancel) {
+            Text("Cancel")
+        }
+        onSave?.let {
+            Button(
+                onClick = it,
+                enabled = onSaveEnabled()
+            ) {
+                Text("Save")
+            }
+        }
+    }
+}
+
+@Composable
+fun SectionRow(content: @Composable (RowScope.() -> Unit)) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
-    ){
-        Text(label, modifier = Modifier.weight(1.5f), style = MaterialTheme.typography.bodyMedium)
-        content()
-    }
+        content = content
+    )
+}
+
+@Composable
+fun RowScope.SectionLabel(label:String) {
+     Text(label, modifier = Modifier.weight(1.5f), style = MaterialTheme.typography.bodyMedium)
 }
 
 @Composable
@@ -106,7 +122,22 @@ fun RowScope.SectionNumField(text:String, isError:Boolean, onChange:(String)->Un
         ),
     )
 }
+@Composable
+fun SectionOption(
+    text : String,
+    isChecked: Boolean,
+    onClick : ()-> Unit
+){
+    SectionRow {
+        Box(Modifier.width(30.dp)){
+            if(isChecked) Icon(painterResource(android.R.drawable.star_on),"checked")
+        }
+        OutlinedButton(onClick, modifier = Modifier.fillMaxWidth()) {
+            Text(text)
+        }
+    }
 
+}
 
 //--------------------------------------------------------------------------------------------------
 // PREVIEW
@@ -114,10 +145,22 @@ fun RowScope.SectionNumField(text:String, isError:Boolean, onChange:(String)->Un
 @Composable
 private fun SectionEditorPreview(){
     BalkTheme(darkTheme = true) {
-        SectionEditor( "Title",{}, {}, {true}){
-            SectionRow ("Num field #1"){
+        SectionEditor( "Title",{}){
+            SectionRow {
+                SectionLabel("Num field #1")
                 SectionNumField("13", false, {})
             }
+            SectionButtons({}, {}, {true})
+        }
+    }
+}
+@Preview(showSystemUi = false)
+@Composable
+private fun OptionsEditorPreview(){
+    BalkTheme(darkTheme = true) {
+        SectionEditor( "Title",{}){
+            SectionOption("Option One", true,{})
+            SectionOption("Option Two", false,{})
         }
     }
 }

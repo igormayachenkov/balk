@@ -29,16 +29,11 @@ fun FormSectionEditor(
     SectionEditor(
         title = "The Balk Form and Size",
         onCancel = onCancel,
-        onSave = {
-            onSave( editorState.copyToBalk(balk) )
-        },
-        onSaveEnabled = {
-            editorState.isValid
-        }
     ) {
 
         // FORM CLASS
-        SectionRow("Class") {
+        SectionRow {
+            SectionLabel("Class")
             with(editorState) {
                 FormClassDropdownMenu(
                     formClass = formClass,
@@ -49,7 +44,8 @@ fun FormSectionEditor(
 
         // WIDTH
         if(editorState.formClass == FormClass.RECTANGLE) {
-            SectionRow("Width") {
+            SectionRow {
+                SectionLabel("Width")
                 with(editorState) {
                     SectionNumField(
                         text    = widthText,
@@ -62,7 +58,8 @@ fun FormSectionEditor(
 
         // HEIGHT
         if(editorState.formClass == FormClass.RECTANGLE) {
-            SectionRow("Height") {
+            SectionRow {
+                SectionLabel("Height")
                 with(editorState) {
                     SectionNumField(
                         text = heightText,
@@ -75,7 +72,8 @@ fun FormSectionEditor(
 
         // RADIUS
         if(editorState.formClass == FormClass.CIRCLE) {
-            SectionRow("Radius") {
+            SectionRow{
+                SectionLabel("Radius")
                 with(editorState) {
                     SectionNumField(
                         text    = radiusText,
@@ -87,7 +85,8 @@ fun FormSectionEditor(
         }
 
         // LENGTH
-        SectionRow("Length") {
+        SectionRow {
+            SectionLabel("Length")
             with(editorState) {
                 SectionNumField(
                     text    = lengthText,
@@ -96,6 +95,13 @@ fun FormSectionEditor(
                 )
             }
         }
+
+        // BUTTONS
+        SectionButtons(
+            onCancel = onCancel,
+            onSave = { onSave( editorState.copyToBalk(balk) ) },
+            onSaveEnabled = { editorState.isValid  }
+        )
     }
 }
 

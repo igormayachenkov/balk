@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ru.igormayachenkov.balk.data.Balk
 import ru.igormayachenkov.balk.data.FakeData
 import ru.igormayachenkov.balk.data.Load
+import ru.igormayachenkov.balk.data.LoadType
 import ru.igormayachenkov.balk.data.Support
 import ru.igormayachenkov.balk.ui.theme.BalkTheme
 
@@ -25,40 +26,58 @@ fun LoadSectionEditor(
     onSave: (Balk)-> Unit,
 ) {
     var editorState by rememberSaveable {
-        mutableStateOf<Load>(balk.load)
+        mutableStateOf<LoadEditorState>(LoadEditorState(balk.load))
     }
 
     SectionEditor(
         title = "The Balk Load",
         onCancel = onCancel,
-        onSave = {
-            onSave(balk.copy(load = editorState))
-        },
-        onSaveEnabled = { true }
     ) {
 
-        // SUPPORT CLASS
-        SectionRow("Class") {
+        // TYPE
+        SectionRow {
+            SectionLabel("Load type")
             with(editorState) {
-                LoadClassDropdownMenu(
-                    load = editorState,
-                    onChange  = {editorState = it}
+                LoadTypeDropdownMenu(
+                    loadType = loadType,
+                    onChange = {editorState = updateType(it)}
                 )
             }
         }
+
+        // WEIGHT
+        SectionRow {
+            SectionLabel("Weight")
+            with(editorState) {
+                SectionNumField(
+                    text    = weightText,
+                    isError = weight == null,
+                    onChange= { editorState = updateWeight(it) }
+                )
+            }
+        }
+
+
+        // BUTTONS
+        SectionButtons(
+            onCancel = onCancel,
+            onSave = { onSave(editorState.copyToBalk(balk)) },
+            onSaveEnabled = { editorState.isValid }
+        )
+
 
     }
 }
 
 @Composable
-private fun LoadClassDropdownMenu(
-    load: Load,
-    onChange : (Load)->Unit
+private fun LoadTypeDropdownMenu(
+    loadType: LoadType,
+    onChange : (LoadType)->Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     Box{
         OutlinedButton({ expanded = !expanded }) {
-            Text(load.toString())
+            Text(loadType.toString())
         }
 
         DropdownMenu(
@@ -67,13 +86,13 @@ private fun LoadClassDropdownMenu(
         ) {
             DropdownMenuItem(
                 text = { Text("Center Point") },
-                enabled = load!= Load.CenterPoint,
-                onClick = { expanded=false; onChange(Load.CenterPoint) }
+                enabled = loadType!= LoadType.CenterPoint,
+                onClick = { expanded=false; onChange(LoadType.CenterPoint) }
             )
             DropdownMenuItem(
                 text = { Text("Uniformly Distributed") },
-                enabled = load!= Load.Distributed,
-                onClick = { expanded=false; onChange(Load.Distributed) }
+                enabled = loadType!= LoadType.Distributed,
+                onClick = { expanded=false; onChange(LoadType.Distributed) }
             )
         }
     }
